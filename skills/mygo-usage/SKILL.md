@@ -90,6 +90,33 @@ In framework terms, the rules that bite:
 - Prefer binding to persistent model fields. A value recomputed each pass loses
   the edit before its notice.
 
+## Writing a view function
+
+- The pass is for building: one event may run it several times, so it reads
+  state and makes no change of its own. Effects belong in handlers, or in a
+  guarded tail after the children are built — out of the loops.
+- To change a collection while building it, record now, act after:
+
+```go
+removed := -1
+ui.Column(c).Children(func() {
+	for _, it := range app.items {
+		if ui.Button(c, "Remove").Clicked() {
+			removed = it.ID // after the loop
+		}
+	}
+})
+if removed >= 0 {
+	app.remove(removed)
+}
+```
+
+- Interactivity is a query: `if b.Clicked() {…}` handles a local action beside
+  the widget; `OnClick`/`OnShortcut` when the action must outlive the pass or
+  routes a command.
+- Frame-local state of one view is `ui.Local`; state shared across views or
+  windows belongs to the app's own structs.
+
 ## Threads and frames
 
 - The UI thread builds the view and runs handlers. Slow I/O and long computation
