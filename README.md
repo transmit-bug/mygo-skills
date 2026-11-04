@@ -5,18 +5,16 @@ Agent skills for building and maintaining apps with [github.com/egoist/mygo](htt
 Published on [skills.sh](https://www.skills.sh); install with the [skills CLI](https://github.com/vercel-labs/skills):
 
 ```bash
-npx skills add owner/mygo-skills
+npx skills add transmit-bug/mygo-skills
 ```
 
 Pick a single skill:
 
 ```bash
-npx skills add owner/mygo-skills --skill mygo-components
+npx skills add transmit-bug/mygo-skills --skill mygo-components
 ```
 
-<!-- After publishing to GitHub, replace `owner` above and enable the badge:
-[![skills.sh](https://skills.sh/b/owner/mygo-skills)](https://skills.sh/b/owner/mygo-skills)
--->
+[![skills.sh](https://skills.sh/b/transmit-bug/mygo-skills)](https://skills.sh/b/transmit-bug/mygo-skills)
 
 ## Skills
 
@@ -24,7 +22,6 @@ npx skills add owner/mygo-skills --skill mygo-components
 |---|---|
 | [`mygo-usage`](skills/mygo-usage/SKILL.md) | How a MyGo app fits together — windows, view functions, state, threads — and how to build and verify a change, including headless `ui.NewTester` tests |
 | [`mygo-components`](skills/mygo-components/SKILL.md) | Widget selection: reconciling every UI need against the official MyGo inventory before hand-rolling layout, plus layout, feedback and theming conventions |
-| [`mygo-maintenance`](skills/mygo-maintenance/SKILL.md) | Maintenance rules that bite — element lifetime and identity, keys, bindings, threading, upgrades — and regression testing with the MyGo vet tool |
 | [`mygo-desktop`](skills/mygo-desktop/SKILL.md) | Services outside the window: dialogs, notifications, clipboard, shell, displays, theme, power, network, secrets, file watching, global shortcuts, menus, tray, lifecycle beyond `Run` |
 | [`mygo-web`](skills/mygo-web/SKILL.md) | Web frontends: page loading and trust model, bound services, channels and typed events, the generated TypeScript client, and plugins |
 
@@ -36,8 +33,6 @@ The skills reference each other by relative path (`../mygo-components/SKILL.md`)
 skills/
 ├── mygo-usage/
 ├── mygo-components/
-├── mygo-maintenance/
-│   └── agents/openai.yaml
 ├── mygo-desktop/
 └── mygo-web/
 ```
@@ -46,7 +41,7 @@ Each skill is a directory with a `SKILL.md` (frontmatter `name` + `description`)
 
 ## As a pack
 
-On [skills.sh](https://www.skills.sh), add this repository (or the individual skills) to a [pack](https://www.skills.sh/docs/packs) to share all five with one install command:
+On [skills.sh](https://www.skills.sh), add this repository (or the individual skills) to a [pack](https://www.skills.sh/docs/packs) to share all four with one install command:
 
 ```bash
 npx skills add https://skills.sh/p/<pack-id>
