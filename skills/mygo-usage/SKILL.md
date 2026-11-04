@@ -14,7 +14,6 @@ sections are independent, so reach for the one the change touches.
 | Material | Reached for |
 |---|---|
 | `../mygo-components/SKILL.md` | which widget carries the meaning, layout, feedback, the official inventory |
-| `../mygo-maintenance/SKILL.md` | lifetime, identity, keys, bindings, threading, upgrades |
 | `../mygo-desktop/SKILL.md` | dialogs, notifications, menus, tray, global shortcuts, secrets, watching files, dark mode, power, network, lifecycle beyond `Run` |
 | `../mygo-web/SKILL.md` | web pages: bindings, the generated client, plugins, trust, custom protocols |
 | the app's `AGENTS.md`, and the docs it names | its package layout, its environment/harness types, its sizes, its commands |
@@ -41,8 +40,8 @@ sections are independent, so reach for the one the change touches.
 
 `go list -m -f '{{.Version}}' github.com/egoist/mygo` is what compiles; the
 official site documents the newest release, and a gap between them is an
-upgrade — `go get github.com/egoist/mygo@latest`, `go tool mygo migrate-ui .`,
-then the maintenance skill's checklist — not code written against a version
+upgrade — `go get github.com/egoist/mygo@latest`, `go tool mygo migrate-ui .` —
+not code written against a version
 `go.mod` does not have. A widget the site shows and the module lacks is that
 same signal, not a reason to wrap it.
 
@@ -58,8 +57,7 @@ the app keeps for it — not a copy in the page, and not a second copy elsewhere
 
 ## State, identity, input
 
-The full rules are `../mygo-maintenance`, and they are the ones that bite. In
-framework terms:
+In framework terms, the rules that bite:
 
 - Identity is significant: a control whose state must survive a rebuild needs a
   stable key, given before its children and before local state.

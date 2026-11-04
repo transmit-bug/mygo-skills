@@ -10,8 +10,7 @@ A UI need is answered by the widget that already carries its meaning.
 recorded decision, not the default.
 
 Scope: widget choice, layout skeletons, visual consistency, accessibility that
-comes from using the real widget. Lifetime, identity, keying and threading are
-the MyGo maintenance skill's; product design is the project's.
+comes from using the real widget; product design is the project's.
 
 The whole skill is one move: **reconcile**. Name the need, put it against the
 official inventory, and record which side wins.
@@ -26,8 +25,8 @@ official inventory, and record which side wins.
    `grep -rhE '^func [A-Z][A-Za-z0-9_]*[\[(]' --include='*.go' --exclude='*_test.go' $MYGO/ui | sed -E 's/func ([A-Za-z0-9_]+)[\[(].*/\1/' | sort -u`
    (every package-level constructor: generics and hand-written ones, tests left out)
    — and the site for what a newer MyGo has. A widget the site has and the
-   module lacks is an upgrade, not a wrapper: take it through
-   `mygo-maintenance`, then re-read these tables.
+   module lacks is an upgrade, not a wrapper: upgrade the module, then
+   re-read these tables.
    Read the docs' prose, not only the signature: the same page states the
    keyboard, focus and assistive-technology behaviour you would otherwise
    rebuild.

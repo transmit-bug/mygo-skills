@@ -1,6 +1,6 @@
 ---
 name: mygo-desktop
-description: Desktop services of a MyGo app that reach outside the window — dialogs, notifications, clipboard, shell, displays, theme and accent, power, network status and proxies, secrets, watching files, global shortcuts, menus and tray icons, and app lifecycle beyond Run (single instance, deep links, file associations, starting at login). Use when the app must reach the operating system — ask the user for a file or an answer, notify, store a token, follow dark mode, register a shortcut or menu, put an icon in the tray, or react to a second instance or an opened file. Widgets inside the window are mygo-components; view lifetime and threading are mygo-maintenance.
+description: Desktop services of a MyGo app that reach outside the window — dialogs, notifications, clipboard, shell, displays, theme and accent, power, network status and proxies, secrets, watching files, global shortcuts, menus and tray icons, and app lifecycle beyond Run (single instance, deep links, file associations, starting at login). Use when the app must reach the operating system — ask the user for a file or an answer, notify, store a token, follow dark mode, register a shortcut or menu, put an icon in the tray, or react to a second instance or an opened file. Widgets inside the window are mygo-components.
 ---
 
 # Desktop services
@@ -15,7 +15,6 @@ keeps this file true across MyGo releases.
 
 Scope: services outside the window. 
 Widgets inside it are`../mygo-components`; 
-view lifetime, identity and threads are`../mygo-maintenance`; 
 build and test commands are `../mygo-usage`.
 
 ## Where the rest is
@@ -31,7 +30,7 @@ build and test commands are `../mygo-usage`.
 
 `go list -m -f '{{.Dir}} {{.Version}}' github.com/egoist/mygo` names the copy
 that compiles; the official site documents the newest release, and a gap
-between them is an upgrade through `../mygo-maintenance`, not a hand-rolled
+between them is an upgrade, not a hand-rolled
 service. Read the section of each service you are about to call in that
 copy, prose included: the per-platform notes state behaviour you would
 otherwise guess at. Done when every option you pass exists in that copy.
