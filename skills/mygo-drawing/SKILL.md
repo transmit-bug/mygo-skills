@@ -37,9 +37,9 @@ Name the tier before writing a `Draw` — cheapest first:
 |---|---|---|
 | 0 | A widget, `ui/chart`, or an SVG icon covers it | the hand-rolled status dot again, in painter form |
 | 1 | A control's face | the control stays `ButtonBase`/`Box` with handlers; `Draw` paints only its face (piano keys, the effort-slider track) |
-| 2 | Data visualisation no chart covers | live waveforms painted in `Area.Draw` at 1000 samples a second |
+| 2 | Data visualisation no chart covers | live waveforms painted in `Area.Draw` while the data streams |
 | 3 | Text laid out yourself | grid cells from `Shape` + `Glyphs`; book pages from `ShapeText`/`ShapeRichText` → `TextLayout` |
-| 4 | Effects and art | `shader.MustCompile` passes over a element or the window |
+| 4 | Effects and art | `shader.MustCompile` passes over an element or the window |
 
 2048 is the tier-0 proof: a whole game — board, tiles, swipe input, pop
 animations — with no `Draw` at all: a `Box` grid, keyframes and

@@ -6,8 +6,12 @@ description: How a native MyGo app is put together, and how a change to one is b
 # Using MyGo
 
 A MyGo app is a runtime, a window, and a view function MyGo calls to rebuild the
-interface from state. Everything below follows from that one arrangement; the
-sections are independent, so reach for the one the change touches.
+interface from state. In immediate-mode terms (GPUI, Dear ImGui), the view
+function is the frame's build pass: elements expire with it, and identity — a
+stable `Key` — is what carries state across frames; the engine underneath is
+retained and repaints only what changed. Everything below follows from that one
+arrangement; the sections are independent, so reach for the one the change
+touches.
 
 ## Where the rest is
 

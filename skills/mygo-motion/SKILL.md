@@ -20,8 +20,7 @@ and test commands are `../mygo-usage`.
 | `$MYGO/docs/ui/motion.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | everything here in depth: gestures, staggering, out-of-sight rules |
 | `$MYGO/docs/ui/transitions.md` | layout-change motion, enter/exit, shared elements |
 | `$MYGO/docs/ui/transforms.md` | `Translate`/`Scale`/`Rotate`/`Skew`, 3D, `BackfaceHidden`, coordinate rules |
-| `$MYGO/examples/timeline`, `$MYGO/examples/confetti` (same `MYGO`) | one playhead driving an intro; paint-only particle motion |
-| the 2048 showcase app, `main.go` in github.com/egoist/2048 | the timing-table pattern end to end |
+| `$MYGO/examples/timeline`, `$MYGO/examples/gallery` (same `MYGO`) | one playhead driving an intro; the Motion page — springs retargeted and thrown, keyframe sequences, shared elements |
 
 Version protocol at `../mygo-usage`: read what you use in the copy
 `go list -m -f '{{.Dir}}'` names.
