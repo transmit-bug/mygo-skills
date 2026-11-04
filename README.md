@@ -24,6 +24,8 @@ npx skills add transmit-bug/mygo-skills --skill mygo-components
 | [`mygo-components`](skills/mygo-components/SKILL.md) | Widget selection: reconciling every UI need against the official MyGo inventory before hand-rolling layout, plus layout, feedback and theming conventions |
 | [`mygo-desktop`](skills/mygo-desktop/SKILL.md) | Services outside the window: dialogs, notifications, clipboard, shell, displays, theme, power, network, secrets, file watching, global shortcuts, menus, tray, lifecycle beyond `Run` |
 | [`mygo-web`](skills/mygo-web/SKILL.md) | Web frontends: page loading and trust model, bound services, channels and typed events, the generated TypeScript client, and plugins |
+| [`mygo-motion`](skills/mygo-motion/SKILL.md) | Motion: reconcile against built-in transitions, the timing table, values/poses/keyframes/timelines/gestures, less-motion and clock-driven animation testing |
+| [`mygo-drawing`](skills/mygo-drawing/SKILL.md) | Custom painting: the draw-only rule and Painter, the four tiers, canvases, pan/zoom, shaders, shaped text, frame cost |
 
 The skills reference each other by relative path (`../mygo-components/SKILL.md`); install them as a set — the sibling layout under `skills/` keeps those links working wherever the CLI copies them.
 

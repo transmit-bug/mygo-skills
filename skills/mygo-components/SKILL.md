@@ -10,7 +10,8 @@ A UI need is answered by the widget that already carries its meaning.
 recorded decision, not the default.
 
 Scope: widget choice, layout skeletons, visual consistency, accessibility that
-comes from using the real widget; product design is the project's.
+comes from using the real widget; product design is the project's. Making a
+change move is `../mygo-motion`; painting beyond widgets is `../mygo-drawing`.
 
 The whole skill is one move: **reconcile**. Name the need, put it against the
 official inventory, and record which side wins.

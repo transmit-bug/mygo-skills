@@ -16,6 +16,8 @@ sections are independent, so reach for the one the change touches.
 | `../mygo-components/SKILL.md` | which widget carries the meaning, layout, feedback, the official inventory |
 | `../mygo-desktop/SKILL.md` | dialogs, notifications, menus, tray, global shortcuts, secrets, watching files, dark mode, power, network, lifecycle beyond `Run` |
 | `../mygo-web/SKILL.md` | web pages: bindings, the generated client, plugins, trust, custom protocols |
+| `../mygo-motion/SKILL.md` | making a change move: transitions, springs, keyframes, timelines, gestures, animation testing |
+| `../mygo-drawing/SKILL.md` | custom painting: `Draw`/`Painter`, canvases, shaders, shaped text, paint cost |
 | the app's `AGENTS.md`, and the docs it names | its package layout, its environment/harness types, its sizes, its commands |
 | `$MYGO/docs/windows.md` and `$MYGO/docs/ui/windows.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | windows beyond the first: `NewWindow`, `WindowOptions` (`StateKey`, `Parent`, `Modal`, `Hidden`), remembered bounds, flyouts, panels |
 | `$MYGO/docs/ui/` (same `MYGO`) | the UI prose: `views.md`, `layout.md`, `testing.md`, `windows.md`, `browsers.md` (the same native UI as a web page), `accessibility.md`, `performance.md`, catalogue `README.md` |
@@ -35,8 +37,8 @@ sections are independent, so reach for the one the change touches.
   happen for input, for timing, and for `Invalidate`.
 - State therefore lives outside the view: the app's own structs, widget state
   structs, or `ui.Local`. The view reads it; handlers change it.
-- Elements and the parts a `*Base` constructor returns belong to one build pass.
-  Store state and `ui.Handle`, never an element.
+- Elements and the parts a `*Base` constructor returns expire before the next
+  build pass. Store state and `ui.Handle`, never an element.
 - `*ui.Context` is the frame's handle on the runtime, not app state: keep it out
   of long-lived fields and worker goroutines, and take `c.Services()` when a
   callback must outlive the pass.
@@ -67,6 +69,16 @@ In framework terms, the rules that bite:
 
 - Identity is significant: a control whose state must survive a rebuild needs a
   stable key, given before its children and before local state.
+- Persistent identity is `.Bind(&handle)`: `handle.Focused(c)` and
+  `FocusWithin(c)` read committed focus, `handle.Focus(c)` and
+  `CancelFocus(c)` move it, `FocusBind(&a.pane, values)` points focus at an
+  app field. `handle.Bounds(c)` is committed geometry for input callbacks;
+  `c.Resolve(handle)` is only the current build's element — do not capture
+  an element to query it later.
+- Elements and the parts a `*Base` constructor returns expire at the end of
+  their build pass — another pass in the same frame included. Stale use
+  panics in development and the tester, and silently no-ops in production:
+  fix the ownership; `Valid()` is a quiet check, not a fix.
 - Handlers (`Clicked()`, `Changed()`, `Submitted()`) run after construction and
   after bound inputs update; a bound value's notice arrives in the following
   pass, so write derived values back where they are read, not where they are
