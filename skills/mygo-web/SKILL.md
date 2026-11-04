@@ -11,9 +11,7 @@ receives **typed events**; `mygo generate` writes the TypeScript client,
 checked and documented on both sides. A window of native UI skips every
 piece of this: its view calls Go directly.
 
-Scope: pages and what serves them. In-window widgets are
-`../mygo-components`; app structure and testing are `../mygo-usage`;
-desktop services are `../mygo-desktop`.
+Scope: pages and what serves them.
 
 ## Where the rest is
 
@@ -26,9 +24,9 @@ desktop services are `../mygo-desktop`.
 
 ## Resolve the version, then read the section
 
-Same protocol as the other mygo skills: read the section you are about to
-use in the copy `go list -m -f '{{.Dir}}'` names, prose included. Done when
-every option you pass exists in that copy.
+Protocol at `../mygo-usage`: read the section you are about to use in the
+copy `go list -m -f '{{.Dir}}'` names, prose included. Done when every
+option you pass exists in that copy.
 
 ## Need → API, and the rule that bites
 
@@ -82,4 +80,8 @@ Build and test as `../mygo-usage` says. The generated client is checked by
 compiling it: keep the frontend's typecheck in the loop. The tester cannot
 answer for the browser side — a page's rendering, real navigation, custom
 protocol behaviour, Linux media: drive those by hand or through the
-automation plugin, and report what remains unverified.
+automation plugin.
+
+Done when: the frontend typecheck passes on the regenerated client, and
+each of those browser-side paths is named in the handoff as unverified,
+left for a human or the automation plugin to drive.

@@ -17,16 +17,14 @@ official inventory, and record which side wins.
 
 ## Reconcile, before the first line of layout
 
-1. **Resolve the source, newest first.** `go list -m -f '{{.Dir}} {{.Version}}' github.com/egoist/mygo`
-   gives the module this app compiles against; the official site documents the
-   newest release, and the two are not always the same. Read the module's copy
-   for what compiles — the catalogue is `$MYGO/docs/ui/README.md`, the
+1. **Resolve the source, newest first.** Version protocol at `../mygo-usage`:
+   the copy `go list -m -f '{{.Dir}}'` names is what compiles and may **lag**
+   the site; a widget the site has and the module lacks is an upgrade, not a
+   wrapper — upgrade the module, then re-read these tables. Read the module's
+   copy for what compiles — the catalogue is `$MYGO/docs/ui/README.md`, the
    constructors are
    `grep -rhE '^func [A-Z][A-Za-z0-9_]*[\[(]' --include='*.go' --exclude='*_test.go' $MYGO/ui | sed -E 's/func ([A-Za-z0-9_]+)[\[(].*/\1/' | sort -u`
-   (every package-level constructor: generics and hand-written ones, tests left out)
-   — and the site for what a newer MyGo has. A widget the site has and the
-   module lacks is an upgrade, not a wrapper: upgrade the module, then
-   re-read these tables.
+   (every package-level constructor: generics and hand-written ones, tests left out).
    Read the docs' prose, not only the signature: the same page states the
    keyboard, focus and assistive-technology behaviour you would otherwise
    rebuild.
@@ -155,7 +153,7 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | A question before a rare, irreversible action | `ui.AlertDialog` | acting at once; or a whole page to confirm |
 | A custom dialog | `ui.DialogBase`, `ui.Modal`, `ui.Overlay` | absolutely positioned `Box` above everything |
 | A panel under an element | `ui.Popover` | absolutely positioned `Box` |
-| A tip on rest or focus | `ui.Tooltip`; **disabled controls show none**, so a reason lives in visible text or `Field.Description` | tooltip as the only explanation |
+| A tip on rest or focus | `.Tooltip(…)` on the element; **disabled controls show none**, so a reason lives in visible text or `Field.Description` | tooltip as the only explanation |
 | Transient outcome of an action | `c.Toast`, `c.ToastAction`, `c.AddToast` | the outcome only in a log line |
 
 ### Status, charts, images
@@ -167,7 +165,7 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | A short count or label | `ui.Badge` | `Box` + `Text` + radius |
 | Several stages on one playhead | `Element.Timeline(key, ui.TimelineOptions)`; a single value `Element.AnimateTo`/`AnimateWith` | percentages recomputed each frame |
 | A trend, bars, an area | `ui/chart`: `Plot`, `Axes`, `NewLinear`/`NewBand`/`NewTime`, `Rect`/`Line`/`Area` marks | showing only the current sample |
-| An icon | `ui.Icon` + `ui.SVG` (MyGo draws icons, supplies none) | text glyphs as icons |
+| An icon | `ui.Icon` over `ui.MustParseSVG`/`ui.ParseSVG` (MyGo draws icons, supplies none) | text glyphs as icons |
 | A picture, a person | `ui.Image`, `ui.Avatar` | — |
 | A clip that plays, or loops behind content | `ui.Video` + `ui.NewVideoPlayer` (`ui.NewGIFDecoder`) | a timer replacing an `Image` each frame |
 
@@ -185,6 +183,9 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | The window's language and regional formats | `c.Locale`, `c.Region`, `Element.Lang`; the widgets' own strings follow them | hardcoded labels and `1/2/2006` |
 | Names and roles | `.Label()`, `.Role()`, `.Description()`; announce async results with `c.Announce` |
 | See why a box is empty or off by 4px | the window's developer tools (`F12`), `docs/ui/inspector.md` |
+
+The guides behind these rows: `docs/ui/accessibility.md`,
+`docs/ui/right-to-left.md`, `docs/ui/styling.md`.
 
 ## Lay it out without literal geometry
 
@@ -208,12 +209,12 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 
 ## Verify
 
+Build and test as `../mygo-usage` says, with a `ui.NewTester` test for the
+interactions you touched. This skill adds its own checks:
+
 ```bash
 MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)
 grep -rhE '^func [A-Z][A-Za-z0-9_]*[\[(]' --include='*.go' --exclude='*_test.go' "$MYGO/ui" | sed -E 's/func ([A-Za-z0-9_]+)[\[(].*/\1/' | sort -u
-go build ./... && go vet ./...
-go test ./...              # ui.NewTester for the interactions you touched
-go tool mygo vet .         # only where go.mod pins the tool
 ```
 
 Drift check: every entry under Actions → Images in `"$MYGO"/docs/ui/README.md`

@@ -1,6 +1,6 @@
 ---
 name: mygo-usage
-description: How a native MyGo app is put together, and how a change to one is built and verified. Use when wiring a window or a view, deciding where state, identity and threads belong, writing or fixing a ui.NewTester headless test, or checking a MyGo UI change before handoff. Framework-level:the project keeps its own package layout, harness names, sizes and commands.
+description: How a native MyGo app is put together, and how a change to one is built and verified. Use when wiring a window or a view, deciding where state, identity and threads belong, writing or fixing a ui.NewTester headless test, or checking a MyGo UI change before handoff. Framework-level: the project keeps its own package layout, harness names, sizes and commands.
 ---
 
 # Using MyGo
@@ -17,14 +17,19 @@ sections are independent, so reach for the one the change touches.
 | `../mygo-desktop/SKILL.md` | dialogs, notifications, menus, tray, global shortcuts, secrets, watching files, dark mode, power, network, lifecycle beyond `Run` |
 | `../mygo-web/SKILL.md` | web pages: bindings, the generated client, plugins, trust, custom protocols |
 | the app's `AGENTS.md`, and the docs it names | its package layout, its environment/harness types, its sizes, its commands |
-| `$MYGO/docs/ui/` where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | upstream prose: `views.md`, `layout.md`, `testing.md`, `README.md` |
-| `$MYGO/docs/` (same `MYGO`) | the non-UI upstream prose: `native.md`, `menus.md`, `app.md`, `configuration.md`, `cli.md`, `distribution.md` |
+| `$MYGO/docs/windows.md` and `$MYGO/docs/ui/windows.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | windows beyond the first: `NewWindow`, `WindowOptions` (`StateKey`, `Parent`, `Modal`, `Hidden`), remembered bounds, flyouts, panels |
+| `$MYGO/docs/ui/` (same `MYGO`) | the UI prose: `views.md`, `layout.md`, `testing.md`, `windows.md`, `browsers.md` (the same native UI as a web page), `accessibility.md`, `performance.md`, catalogue `README.md` |
+| `$MYGO/docs/` (same `MYGO`) | the non-UI prose: `native.md`, `menus.md`, `app.md`, `updates.md` (auto-update via `mygo.Updater`), `configuration.md`, `cli.md`, `distribution.md` |
 
 ## How a MyGo app is put together
 
 - `mygo.App` owns the process: it is told what to do `WhenReady`, and `Run`
   drives it until the last window closes. Windows are created there, on the main
   thread, once — not rebuilt per frame.
+- Windows beyond the first are `mygo.NewWindow(mygo.WindowOptions{…})`, once
+  in `WhenReady` like the first. `Parent` keeps a child above its owner and
+  closes it with the owner; `Modal` also blocks the owner; `StateKey`
+  remembers bounds and maximized state across runs.
 - A window's content is `ui.View(f)` with `f func(*ui.Context)`. MyGo calls `f`
   for every frame, so the view is **rebuilt from state**, never mutated. Frames
   happen for input, for timing, and for `Invalidate`.
@@ -38,12 +43,13 @@ sections are independent, so reach for the one the change touches.
 
 ## What this version has
 
-`go list -m -f '{{.Version}}' github.com/egoist/mygo` is what compiles; the
-official site documents the newest release, and a gap between them is an
-upgrade — `go get github.com/egoist/mygo@latest`, `go tool mygo migrate-ui .` —
-not code written against a version
-`go.mod` does not have. A widget the site shows and the module lacks is that
-same signal, not a reason to wrap it.
+The version protocol every mygo skill points here for: `go list -m -f
+'{{.Version}}' github.com/egoist/mygo` is what compiles; the official site
+documents the newest release, and the app may **lag** it. A gap between
+them is an upgrade — `go get github.com/egoist/mygo@latest`, `go tool mygo
+migrate-ui .` (its guide is `$MYGO/docs/ui/migration.md`) — not code
+written against a version `go.mod` does not have. A widget the site shows
+and the module lacks is that same signal, not a reason to wrap it.
 
 ## Choosing a widget
 
@@ -76,7 +82,6 @@ In framework terms, the rules that bite:
   for a frame. Both are safe from any goroutine.
 - `Update` is asynchronous. Cancel obsolete work and drop stale results rather
   than letting a late callback overwrite a newer screen.
-- The outcome appears where the action was; a log line is a record, not a report.
 
 ## Testing a view headless
 
@@ -91,15 +96,16 @@ view that carries the risk:
 | The whole window | the view that holds the whole window, at the size the app opens at | overlaps, scrolling, dispatch between sections |
 | Startup | whatever builds the window, plus its config | wiring: settings, logging, defaults |
 
-What the tester can do, by group:
+What the tester can do — the calls whose behaviour is not guessable; the
+full surface is `$MYGO/docs/ui/testing.md`:
 
 | Need | Calls |
 |---|---|
-| Pointer | `tt.Click`, `tt.ClickAt`, `tt.ClickWith(ui.Shift, …)`, `tt.Move`/`tt.Press`/`tt.Release`, `tt.Scroll` (touchpad, immediate), `tt.Wheel` (one notch, glides as the clock advances) |
-| Keyboard | `tt.Key(ui.Cmd, ui.KeyS)`, `tt.Type`, `tt.TypeKey`, `tt.Compose`, `tt.Command("copy")` |
-| Menus | `tt.RightClick`, `tt.Menu`, `tt.ChooseMenuItem("Move to", "Archive")` |
-| The window | `tt.SetSize`, `tt.SetScale`, `tt.SetDark`, `tt.SetPreferences`, `tt.SetLocale`, `tt.SetDirection`, `tt.SetFocused`, `tt.SetTitleBar` |
-| What it shows | `tt.Texts`, `tt.HasText`, `tt.Find` (a box), `tt.Focused`, `tt.Cursor`, `tt.Clipboard`, `tt.Announcements`, `tt.OpenedURLs`, `tt.Image()` |
+| Pointer | `tt.ClickAt`, `tt.ClickWith(ui.Shift, …)`, `tt.Scroll` (touchpad, immediate) vs `tt.Wheel` (one notch, glides as the clock advances) |
+| Keyboard | `tt.Compose`, `tt.Command("copy")` |
+| Menus | `tt.RightClick`, `tt.ChooseMenuItem("Move to", "Archive")` |
+| The window | `tt.SetScale`, `tt.SetDark`, `tt.SetPreferences`, `tt.SetLocale`, `tt.SetDirection` |
+| What it shows | `tt.Find` (a box), `tt.Image()` (pixels), `tt.Clipboard`, `tt.Announcements`, `tt.OpenedURLs` |
 | Frames and time | `tt.Frame`, `tt.FramePending`, `tt.Advance(d)`, `tt.Now()` |
 
 Two clocks, and mixing them up is the usual flake:
@@ -133,6 +139,7 @@ go test ./...
 CGO_ENABLED=0 go test ./...   # the shipped build must not need cgo
 go tool mygo vet .            # where go.mod has the tool directive
 go run .                      # the real frame, GPU and all
+go tool mygo dev -web         # the same UI in a browser tab; docs/ui/browsers.md
 ```
 
 A headless test proves text, boxes, focus, and that a click reached a handler.
