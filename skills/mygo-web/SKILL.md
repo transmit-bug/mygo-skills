@@ -68,7 +68,7 @@ fetch and WebSocket plugins take an `http.Client` and an `Allow` function.
 | Liquid Glass surfaces | `glass` |
 | Game loop, camera, gamepads | `game` |
 | Loading indicators | `loading` |
-| Another process drives the app — end-to-end tests, agents | `automation` (opt-in, left out of release builds) |
+| Another process drives the app — end-to-end tests, agents | `automation` (opt-in, left out of release builds); its `mygo-automation` CLI snapshots windows and acts by short ref — `go install github.com/egoist/mygo/plugins/automation/cmd/mygo-automation`, and `mygo-automation skills` prints the version-matched guide |
 
 Writing one: a `mygo.Plugin{Name, Service, Setup}`, its service bound under
 `plugin:<name>` outside the generated client, its JavaScript package calling
