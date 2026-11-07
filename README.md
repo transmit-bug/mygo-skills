@@ -36,14 +36,16 @@ skills/
 ├── mygo-usage/
 ├── mygo-components/
 ├── mygo-desktop/
-└── mygo-web/
+├── mygo-web/
+├── mygo-motion/
+└── mygo-drawing/
 ```
 
 Each skill is a directory with a `SKILL.md` (frontmatter `name` + `description`) — the standard [agent skills](https://agentskills.io) format. The `skills/` layout is auto-discovered by the CLI; no configuration needed.
 
 ## As a pack
 
-On [skills.sh](https://www.skills.sh), add this repository (or the individual skills) to a [pack](https://www.skills.sh/docs/packs) to share all four with one install command:
+On [skills.sh](https://www.skills.sh), add this repository (or the individual skills) to a [pack](https://www.skills.sh/docs/packs) to share all six with one install command:
 
 ```bash
 npx skills add https://skills.sh/p/<pack-id>
