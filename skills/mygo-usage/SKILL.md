@@ -89,6 +89,16 @@ In framework terms, the rules that bite:
   built.
 - Prefer binding to persistent model fields. A value recomputed each pass loses
   the edit before its notice.
+- `HandleInput` and `ObserveInput` see every key the system reports:
+  `ev.Code` names it by position on any keyboard (`ui.CodeShiftLeft`),
+  and `ev.Key` is `ui.KeyUnknown` where the layout types none. A
+  handler's `true` takes the key from the desktop too — return `false`
+  for keys you leave to it, or Alt stops opening the menu bar.
+- A press the system takes commits nothing — no click, drop or
+  `DragEnded`. The release arrives with `ev.Canceled` set;
+  `PressCanceled()` reports it on the element, so a preview rolls back
+  instead of committing (`PressedButton()` names the button, and only
+  the primary one drags).
 
 ## Writing a view function
 
@@ -148,7 +158,7 @@ full surface is `$MYGO/docs/ui/testing.md`:
 | Keyboard | `tt.Compose`, `tt.Command("copy")` |
 | Menus | `tt.RightClick`, `tt.ChooseMenuItem("Move to", "Archive")` |
 | The window | `tt.SetScale`, `tt.SetDark`, `tt.SetPreferences`, `tt.SetLocale`, `tt.SetDirection` |
-| What it shows | `tt.Find` (a box), `tt.Image()` (pixels), `tt.Clipboard`, `tt.Announcements`, `tt.OpenedURLs` |
+| What it shows | `tt.Find` (a box), `tt.Image()` (pixels), `tt.Access(name)` (role, name and states), `tt.Clipboard`, `tt.Announcements`, `tt.OpenedURLs` |
 | Frames and time | `tt.Frame`, `tt.FramePending`, `tt.Advance(d)`, `tt.Now()` |
 
 Two clocks, and mixing them up is the usual flake:
@@ -183,7 +193,17 @@ CGO_ENABLED=0 go test ./...   # the shipped build must not need cgo
 go tool mygo vet .            # where go.mod has the tool directive
 go run .                      # the real frame, GPU and all
 go tool mygo dev -web         # the same UI in a browser tab; docs/ui/browsers.md
+
+# Driving the built app from outside, as a screen reader does:
+go install github.com/egoist/mygo/plugins/automation/cmd/mygo-automation
+mygo-automation skills        # the guide matching the installed version
 ```
+
+The automation CLI needs the app's opt-in: `plugins/automation` imported under
+a build tag, run with `MYGO_AUTOMATION` naming a socket
+(`$MYGO/docs/plugins/automation.md`). `snapshot` reads a window one line per
+element (`@e2 [button] "Add"`), actions take the ref, and `--settle` prints
+what changed.
 
 A headless test proves text, boxes, focus, and that a click reached a handler.
 It does not prove GPU rendering on the target, a native dialog round trip, or
