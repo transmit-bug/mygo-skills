@@ -7,7 +7,21 @@ description: Pick MyGo's own widget before composing layout by hand. Use when wr
 
 A UI need is answered by the widget that already carries its meaning.
 `Row`, `Column` and `Text` compose what no widget covers; choosing them is a
-recorded decision, not the default.
+recorded decision, not the default — the decision being *structure*, never a
+widget's job rebuilt by hand.
+
+A screen is three tiers, by how much of it each should carry:
+
+- **Structure** — the layout family: `Row`/`Column`, `Grid`, `Split`,
+  `Scroll`, `Spacer`, `Divider`, sized by the theme (`t.Space`, `t.Rem`).
+  Most of the screen; heavy use here is the point.
+- **Semantics** — the map below: one widget per need, at the point of need.
+  Their count follows the needs; a widget composed to imitate another is the
+  tell its row retires.
+- **Overlays** — `Popover`, `Modal`, `AlertDialog`, toasts, `WebView` — are
+  spent on a trigger: a right-click, a rare irreversible question, a transient
+  outcome, a task that must finish first. Piling up is a structure problem;
+  the fix is `Split`, `Tabs`, `Sidebar`, not more chrome.
 
 Scope: widget choice, layout skeletons, visual consistency, accessibility that
 comes from using the real widget; product design is the project's. Making a
@@ -252,6 +266,8 @@ grep -rnE '\.(Width|Height|FontSize|Padding|Gap)\([0-9]' "$UI" --include='*.go'
 grep -rnE 'Sortable:|Columns:|CellMenu|HeaderMenu|Reorder:|EditableText|FollowEnd' "$UI" --include='*.go'
 # Feedback: toasts present, and how many outcomes only reach a log.
 grep -rn 'Toast' "$UI" --include='*.go'
+# Overlays: each hit names the trigger that opens it; a pile of them is a structure problem.
+grep -rnE 'Popover|Modal|AlertDialog|WebView' "$UI" --include='*.go'
 ```
 
 Done when: the inventory grep ran against the module version go.mod resolves to;
