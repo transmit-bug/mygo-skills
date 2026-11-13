@@ -87,6 +87,7 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 |---|---|---|
 | A row of controls along a window | `ui.Toolbar` | `Row` of `Button`s: loses one tab stop, arrow keys, overflow menu |
 | A command with options | `ui.MenuButton`; a menu of choices with their current one ticked `ui.PopoverMenuButton` — `PopoverMenuButtonOptions` places the menu (`At`/`Self`) and `Open` opens it from code | `Button` + `Popover` wired by hand |
+| A main action joined to related ones | `ui.SplitButton` — one control, `.Button` acts and `.Arrow.Menu` opens the related actions; in accent: `ui.PrimarySplitButton` | a `Button` beside a `MenuButton` as two controls |
 | A menu item that deletes, explains or carries a value | `MenuItem.Danger`, `.Subtitle`, `.Trailing`, `.Content` (anything at all, a download row with a progress bar); `Menu.MaxWidth` caps width; `Icon`/`IconColor` in drawn menus | a hand-drawn menu row; a destructive item the theme reads as safe |
 | Every menu of a window drawn in the window — the table's, the editor's, text inputs' too | `c.SetMenuPresentation(ui.PopoverMenus)` | per-widget menu styling |
 | Right-click on an element, row, cell or header | `Element.ContextMenu`, `ListState.CellMenu`, `ListState.HeaderMenu` | `Popover` placed at the pointer |
@@ -139,7 +140,7 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | Need | Use | The tell it retires |
 |---|---|---|
 | A data table, a spreadsheet | `ui.Table` + `Sortable`, `Fixed`, `RowHeader`, `CellSelect`, `Columns`, `CellMenu`, `Reorder`, `EditableText`, `Key`; a spreadsheet's chosen cell and stripes: `ListState.HeaderCell`, `CellsStyle` | header `Row` with literal widths, rows built in a loop |
-| Rows of any height, appending; a chat or log | `ui.List` + `Key`, `FollowEnd`, `Header`, `Reorder`, `DragSelect`; a fold opening in the last row: `HoldPlace` keeps the clicked line put; `DragRows` drags rows to targets elsewhere | `Scroll` + `Column` + index loops; scroll anchoring by hand |
+| Rows of any height, appending; a chat or log | `ui.List` + `Key`, `FollowEnd`, `Header`, `Reorder`, `DragSelect`; a fold opening in the last row: `HoldPlace` keeps the clicked line put; `DragRows` drags rows to targets elsewhere; the app picks the row: `Choose(row)`, a `Key` keeping the choice with its item as rows shift | `Scroll` + `Column` + index loops; scroll anchoring by hand |
 | A tree | `ui.Tree`/`TreeItem`; large or columned `ui.Outline`, `ui.OutlineTable` | indented rows with a bool map |
 | A grid of items | `ui.GridView` (builds what shows); layout grid `ui.Grid` | `Column` of `Row`s |
 | A value dragged within the window, or files dropped on a target | `Element.Draggable`, `ui.DragOver[T]`/`ui.Drop[T]`, `ui.DataDragOver`/`ui.DropData`, `Element.DroppedFiles` | pointer tracking on `InputEvent` plus a bool |
@@ -151,7 +152,7 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | Two panes the user resizes | `ui.Split`, `ui.SplitVertical`, `ui.SplitPercent`, `ui.SplitVerticalPercent`; double-click resets: `SplitReset(v)` | `Width(220)`, `HeightPercent`, a bool drag flag |
 | A section that opens and closes | `ui.Collapsible`; several `ui.Accordion`, `ui.AccordionItem` | bool + chevron glyph + conditional children |
 | A form | `ui.Form` + `ui.Field` + `.Description`/`.Error` + `Fieldset.Disabled` | fields stacked as `Row`s, error text tinted by hand |
-| A scrolling region | `ui.Scroll`, `ui.ScrollBoth`, `ui.ScrollHorizontal` | clipping by fixed height |
+| A scrolling region | `ui.Scroll`, `ui.ScrollBoth`, `ui.ScrollHorizontal`; bars per axis `ScrollbarAxes(h, v)`, their look `ScrollbarStyle` | clipping by fixed height |
 | A carousel or pager that snaps | the scroll container's `ScrollSnap(ui.SnapMandatory)` + the item's `SnapAlign` | drag-end math and a correction animation |
 | A heading that stays until its section passes | `Element.Sticky` | scroll offsets applied by hand |
 | A web page inside the window | `ui.WebView` + `mygo.Window.NewWebView` | a second window that is only a browser |
@@ -183,10 +184,10 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | A value inside a range, coloured by level | `ui.Meter` + `ui.MeterLevels` | a bare number |
 | A short count or label | `ui.Badge` | `Box` + `Text` + radius |
 | Several stages on one playhead | `Element.Timeline(key, ui.TimelineOptions)`; a single value `Element.AnimateTo`/`AnimateWith` | percentages recomputed each frame |
-| A trend, bars, an area | `ui/chart`: `Plot`, `Axes`, `NewLinear`/`NewBand`/`NewTime`, `Rect`/`Line`/`Area` marks | showing only the current sample |
+| A trend, bars, an area | `ui/chart`: `Plot`, `Axes`, `NewLinear`/`NewBand`/`NewTime`, log `NewLog`/`NewSymLog` (a domain crossing zero needs `SymLog`), `Rect`/`Line`/`Area` marks | showing only the current sample |
 | An icon | `ui.Icon` over `ui.MustParseSVG`/`ui.ParseSVG` (MyGo draws icons, supplies none); Apple's symbols on macOS: `sfsymbols.Symbol(c, name)`, which reports none elsewhere — keep an SVG fallback | text glyphs as icons |
 | A picture, a person | `ui.Image`, `ui.Avatar` | — |
-| A clip that plays, or loops behind content | `ui.Video` + `ui.NewVideoPlayer` (`ui.NewGIFDecoder`) | a timer replacing an `Image` each frame |
+| A clip that plays, or loops behind content | `ui.Video` over a `ui.VideoPlayer`: `ui/video.Open/OpenURL/OpenData` (the system's engines — sound, seek, rate) or a Go decoder, `ui.NewGIFDecoder`/`ui.NewAPNGDecoder` (silent, everywhere) | a timer replacing an `Image` each frame |
 
 ### Platform
 

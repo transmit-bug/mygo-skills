@@ -59,9 +59,9 @@ fetch and WebSocket plugins take an `http.Client` and an `Allow` function.
 
 | Need | Plugin |
 |---|---|
-| HTTP from Go, any header, no CORS | `fetch` |
+| HTTP from Go, any header, no CORS | `fetch` — a URL carrying credentials (`https://user:pass@host`) is rejected in the page, before Go sees it |
 | WebSocket with handshake headers | `websocket` |
-| A local database, without cgo | `sqlite` |
+| A local database, without cgo | `sqlite` — since v0.9.0 a native module: `MYGO_NATIVE_SQLITECORE` names a different library, `sqlite.LibraryPath` and `MYGO_SQLITE_LIBRARY` are gone |
 | Page-side file watches | `watch` |
 | A Sparkle-style update window | `updater` |
 | A terminal view for native UI | `terminal` |

@@ -23,9 +23,9 @@ touches.
 | `../mygo-motion/SKILL.md` | making a change move: transitions, springs, keyframes, timelines, gestures, animation testing |
 | `../mygo-drawing/SKILL.md` | custom painting: `Draw`/`Painter`, canvases, shaders, shaped text, paint cost |
 | the app's `AGENTS.md`, and the docs it names | its package layout, its environment/harness types, its sizes, its commands |
-| `$MYGO/docs/windows.md` and `$MYGO/docs/ui/windows.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | windows beyond the first: `NewWindow`, `WindowOptions` (`StateKey`, `Parent`, `Modal`, `Hidden`), remembered bounds, flyouts, panels |
+| `$MYGO/docs/windows.md` and `$MYGO/docs/ui/windows.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | windows beyond the first: `NewWindow`, `WindowOptions` (`StateKey`, `Parent`, `Modal`, `Hidden`), remembered bounds (`App.ClearWindowStates` resets), `SetInputRegion` (clicks only on parts of the window), flyouts, panels |
 | `$MYGO/docs/ui/` (same `MYGO`) | the UI prose: `views.md`, `layout.md`, `testing.md`, `windows.md`, `browsers.md` (the same native UI as a web page), `accessibility.md`, `performance.md`, catalogue `README.md` |
-| `$MYGO/docs/` (same `MYGO`) | the non-UI prose: `native.md`, `menus.md`, `app.md`, `updates.md` (auto-update via `mygo.Updater`), `configuration.md`, `cli.md`, `distribution.md` |
+| `$MYGO/docs/` (same `MYGO`) | the non-UI prose: `native.md`, `native-modules.md` (Go interfaces in Swift, Rust or Zig; experimental), `menus.md`, `app.md`, `updates.md` (auto-update via `mygo.Updater`), `configuration.md`, `cli.md`, `distribution.md` |
 
 ## How a MyGo app is put together
 
@@ -57,6 +57,15 @@ migrate-ui .` (its guide is `$MYGO/docs/ui/migration.md`) — not code
 written against a version `go.mod` does not have. A widget the site shows
 and the module lacks is that same signal, not a reason to wrap it.
 
+What the newest release (v0.9.0) has that an older copy lacks:
+**native modules**, a Go interface implemented in Swift, Rust or Zig,
+built by `mygo dev` — experimental, may break in any release; native
+video, `ui/video.Open/OpenURL/OpenData`, the system's media framework,
+with sound; the `audio/aac` and `audio/flac` codecs. One break: the
+SQLite plugin loads its library through the native module system —
+`sqlite.LibraryPath` and `MYGO_SQLITE_LIBRARY` are gone;
+`MYGO_NATIVE_SQLITECORE` names a replacement.
+
 ## Choosing a widget
 
 Reconcile each need against `../mygo-components/SKILL.md` before writing a box.
@@ -75,8 +84,9 @@ In framework terms, the rules that bite:
   stable key, given before its children and before local state.
 - Persistent identity is `.Bind(&handle)`: `handle.Focused(c)` and
   `FocusWithin(c)` read committed focus, `handle.Focus(c)` and
-  `CancelFocus(c)` move it, `FocusBind(&a.pane, values)` points focus at an
-  app field. `handle.Bounds(c)` is committed geometry for input callbacks;
+  `CancelFocus(c)` move it — focusing scrolls the element into view,
+  `ui.FocusOptions{PreventScroll: true}` keeps the scroll —
+  `FocusBind(&a.pane, values)` points focus at an app field. `handle.Bounds(c)` is committed geometry for input callbacks;
   `c.Resolve(handle)` is only the current build's element — do not capture
   an element to query it later.
 - Elements and the parts a `*Base` constructor returns expire at the end of
@@ -192,6 +202,7 @@ go test ./...
 CGO_ENABLED=0 go test ./...   # the shipped build must not need cgo
 go tool mygo vet .            # where go.mod has the tool directive
 go run .                      # the real frame, GPU and all
+go tool mygo dev -background  # the real app, taking no focus
 go tool mygo dev -web         # the same UI in a browser tab; docs/ui/browsers.md
 
 # Driving the built app from outside, as a screen reader does:
