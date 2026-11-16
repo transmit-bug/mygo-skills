@@ -1,6 +1,6 @@
 ---
 name: mygo-usage
-description: How a native MyGo app is put together, and how a change to one is built and verified. Use when wiring a window or a view, deciding where state, identity and threads belong, writing or fixing a ui.NewTester headless test, or checking a MyGo UI change before handoff. Framework-level: the project keeps its own package layout, harness names, sizes and commands.
+description: How a native MyGo app is put together, and how a change to one is built and verified. Use when wiring a window or a view, deciding where state, identity and threads belong, writing or fixing a ui.NewTester headless test, or checking a MyGo UI change before handoff. Framework-level the project keeps its own package layout, harness names, sizes and commands.
 ---
 
 # Using MyGo
