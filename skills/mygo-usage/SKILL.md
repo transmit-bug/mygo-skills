@@ -1,6 +1,6 @@
 ---
 name: mygo-usage
-description: How a native MyGo app is put together, and how a change to one is built and verified. Use when wiring a window or a view, deciding where state, identity and threads belong, writing or fixing a ui.NewTester headless test, or checking a MyGo UI change before handoff. Framework-level the project keeps its own package layout, harness names, sizes and commands.
+description: How a native MyGo app is put together, and how a change to one is built and verified — on the desktop or on iOS and Android. Use when wiring a window or a view, deciding where state, identity and threads belong, writing or fixing a ui.NewTester headless test, building or running the app on a phone, or checking a MyGo UI change before handoff. Framework-level the project keeps its own package layout, harness names, sizes and commands.
 ---
 
 # Using MyGo
@@ -25,6 +25,7 @@ touches.
 | the app's `AGENTS.md`, and the docs it names | its package layout, its environment/harness types, its sizes, its commands |
 | `$MYGO/docs/windows.md` and `$MYGO/docs/ui/windows.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | windows beyond the first: `NewWindow`, `WindowOptions` (`StateKey`, `Parent`, `Modal`, `Hidden`), remembered bounds (`App.ClearWindowStates` resets), `SetInputRegion` (clicks only on parts of the window), flyouts, panels |
 | `$MYGO/docs/ui/` (same `MYGO`) | the UI prose: `views.md`, `layout.md`, `testing.md`, `windows.md`, `browsers.md` (the same native UI as a web page), `accessibility.md`, `performance.md`, catalogue `README.md` |
+| `$MYGO/docs/mobile/` (same `MYGO`) | building for iOS or Android — the CLI targets, tabs and pushed windows, fingers and touch, device APIs, native code of your own |
 | `$MYGO/docs/` (same `MYGO`) | the non-UI prose: `native.md`, `native-modules.md` (Go interfaces in Swift, Rust or Zig; experimental), `menus.md`, `app.md`, `updates.md` (auto-update via `mygo.Updater`), `configuration.md`, `cli.md`, `distribution.md` |
 
 ## How a MyGo app is put together
@@ -57,14 +58,22 @@ migrate-ui .` (its guide is `$MYGO/docs/ui/migration.md`) — not code
 written against a version `go.mod` does not have. A widget the site shows
 and the module lacks is that same signal, not a reason to wrap it.
 
-What the newest release (v0.9.0) has that an older copy lacks:
+What the newest release (v0.10.0) has that an older copy lacks: **iOS
+and Android** — the same Go, bound services and events, native UI drawn
+by Metal or OpenGL ES, pages in the system's web view, `mygo dev
+-platform ios|android`, signed `.ipa`/`.apk`/`.aab` builds
+(`docs/mobile/`); the `ui/mobile` widget kit; network images
+(`netimage.Image(c, url)` with `Preload` and its cache); golden-image
+tests (`golden.Match(t, tt, path)`, `MYGO_UPDATE_GOLDEN=1` writes);
+`ui.Recorder`, which builds a view's frames at named times without a
+window, and the `plugins/render` videos drawn from it; a page may
+cancel a bound call with an `AbortSignal`. Still experimental:
 **native modules**, a Go interface implemented in Swift, Rust or Zig,
-built by `mygo dev` — experimental, may break in any release; native
-video, `ui/video.Open/OpenURL/OpenData`, the system's media framework,
-with sound; the `audio/aac` and `audio/flac` codecs. One break: the
-SQLite plugin loads its library through the native module system —
-`sqlite.LibraryPath` and `MYGO_SQLITE_LIBRARY` are gone;
-`MYGO_NATIVE_SQLITECORE` names a replacement.
+built by `mygo dev` — may break in any release. A copy older than
+v0.9.0 also lacks native video, `ui/video.Open/OpenURL/OpenData`, and
+carries the SQLite break: the plugin loads its library through the
+native module system — `sqlite.LibraryPath` and `MYGO_SQLITE_LIBRARY`
+are gone; `MYGO_NATIVE_SQLITECORE` names a replacement.
 
 ## Choosing a widget
 
@@ -168,7 +177,7 @@ full surface is `$MYGO/docs/ui/testing.md`:
 | Keyboard | `tt.Compose`, `tt.Command("copy")` |
 | Menus | `tt.RightClick`, `tt.ChooseMenuItem("Move to", "Archive")` |
 | The window | `tt.SetScale`, `tt.SetDark`, `tt.SetPreferences`, `tt.SetLocale`, `tt.SetDirection` |
-| What it shows | `tt.Find` (a box), `tt.Image()` (pixels), `tt.Access(name)` (role, name and states), `tt.Clipboard`, `tt.Announcements`, `tt.OpenedURLs` |
+| What it shows | `tt.Find` (a box), `tt.Image()` (pixels), `golden.Match(t, tt, "testdata/card.png")` (pixels against a golden file, tolerance per channel; a failure writes the frame as `*.got.png`), `tt.Access(name)` (role, name and states), `tt.Clipboard`, `tt.Announcements`, `tt.OpenedURLs` |
 | Frames and time | `tt.Frame`, `tt.FramePending`, `tt.Advance(d)`, `tt.Now()` |
 
 Two clocks, and mixing them up is the usual flake:
@@ -204,6 +213,7 @@ go tool mygo vet .            # where go.mod has the tool directive
 go run .                      # the real frame, GPU and all
 go tool mygo dev -background  # the real app, taking no focus
 go tool mygo dev -web         # the same UI in a browser tab; docs/ui/browsers.md
+go tool mygo dev -platform ios  # or -platform android: a simulator, emulator or device; docs/mobile/
 
 # Driving the built app from outside, as a screen reader does:
 go install github.com/egoist/mygo/plugins/automation/cmd/mygo-automation

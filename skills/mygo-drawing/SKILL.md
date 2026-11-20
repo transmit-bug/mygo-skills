@@ -25,6 +25,7 @@ commands are `../mygo-usage`.
 | `$MYGO/docs/ui/performance.md` | steady-frame costs and benchmark fixtures |
 | `$MYGO/docs/ui/text-input-client.md` | `ShapeText`/`ShapeRichText` retained geometry |
 | `$MYGO/examples/chart-streaming`, `piano`, `effort-slider`, `blackhole` (same `MYGO`) | the tiers live: live data, a custom control, a shader pass |
+| `$MYGO/docs/plugins/render.md` (same `MYGO`) | videos of the UI without a window or an app: a `render.Composition`'s view builds each frame from the frame number, `render.Video` encodes it on the GPU, CPU where none runs |
 
 Version protocol at `../mygo-usage`: read what you use in the copy
 `go list -m -f '{{.Dir}}'` names.
@@ -59,7 +60,7 @@ the widget or chart that lost.
 | A ring with its hole; a point inside a shape | `Path.FillRule(ui.EvenOdd)`; `Path.Contains(pt)` |
 | The pointer taken only inside a shape | `Element.HitTest(fn)` — a round button hits inside its circle |
 | Stroke details | `Path.Cap` (`ButtCap`/`SquareCap`), `Path.Join` (+`MiterLimit`), `Path.Dash` |
-| Images and sprites | `p.Image`, `p.ImageRegion(bitmap, src, dst, ui.ImageOptions{Tint, FlipX, …})` — a region outside the view draws nothing, so sheets need no own culling |
+| Images and sprites | `p.Image`, `p.ImageRegion(bitmap, src, dst, ui.ImageOptions{Tint, FlipX, …})` — a region outside the view draws nothing, so sheets need no own culling; many quads in one GPU draw, `shader.DrawInstances` |
 | Text | `p.Text`, `p.RichText`, after `p.MeasureText` to centre; `p.Glyphs` for runes placed by hand; `p.TextLayout` for a shaped layout |
 | Focus | `p.FocusRing` — for widgets that draw their own |
 | Icons | `p.Icon(svg, rect, tint)` |

@@ -37,8 +37,10 @@ option you pass exists in that copy.
 | Push changes to pages | `mygo.NewEvent[T]("name")` + `Emit`/`Broadcast`/`EmitPage` | Events emitted before the page is ready deliver once it is; `Emit`'s error ends the loop feeding a closed window; names are unique and `mygo:` is reserved |
 | Run code in the page | `Page.Eval` / `mygo.EvalAs[T]` | Statements run as an async function body — `return` produces the value; a throw is an `*mygo.EvalError` |
 | Attach to the caller | `mygo.CallerWindow(ctx)`, `mygo.CallerPage(ctx)` | A leading `context.Context` cancels when the page navigates away or its window closes — pass it to slow work |
+| The page cancels a call | the client method's `.with({ signal })` — an `AbortSignal`, as `fetch` takes; untyped `callWith(method, args, options)` | Aborting cancels the method's context: take the leading `context.Context` and pass it to the work; a method that takes none runs to its end while the promise rejects with the signal's reason |
 | Decide who may call | `PageOptions.TrustedOrigins`, `PageOptions.Untrusted` | Trust follows the page's URL as it navigates; frames never call; `"*"` hands Go to every site the page shows |
-| Serve app content at a URL | `mygo.Protocol.Handle` | Handlers run on their own goroutines and stream; each scheme is its own origin with its own CORS; WebKitGTK plays no media from a custom scheme — serve it from a loopback HTTP server |
+| Serve app content at a URL | `mygo.Protocol.Handle` | Handlers run on their own goroutines and stream; each scheme is its own origin with its own CORS; an iframe of another origin loads its subresources through the scheme too (WebView2 127+ on Windows); WebKitGTK plays no media from a custom scheme — serve it from a loopback HTTP server |
+| A Windows build without the webview | the `mygo_nowebview` build tag | links no WebView2 — a page window becomes a build-time decision |
 | Values across the boundary | Go `encoding/json/v2` rules | `[]byte` arrives base64, `time.Duration` in nanoseconds, ids past 2⁵³ carry `json:"id,string"`, named constants become unions, `MarshalJSON` becomes `unknown`; fields need `json` tags to keep their names |
 | Report a Go error to the page | return the error | The promise rejects with a `CallError`; its message is the error's text and `err.method` names the call |
 | Page without a build step | `window.mygo.call/on/channel` | Missing arguments arrive in Go as zero values |
@@ -47,9 +49,11 @@ option you pass exists in that copy.
 
 `mygo generate` builds the app and runs it with `MYGO_GENERATE` set:
 `main` runs up to `App.Run`. Work that must not happen then — migrating a
-database, claiming a device — goes in `App.WhenReady`. Methods become
-lower camel case and Go doc comments become TSDoc; `mygo dev` and
-`mygo build` regenerate it, so it is rarely run by hand.
+database, claiming a device — goes in `App.WhenReady`. Each method binds
+to a typed call — `add: bind<[string], Note>("Notes.Add", (t) => [t])` —
+whose `.with(options)` carries an `AbortSignal`; Go doc comments become
+TSDoc; `mygo dev` and `mygo build` regenerate it, so it is rarely run by
+hand.
 
 ## Plugins
 

@@ -34,7 +34,7 @@ widget mistake:
 |---|---|
 | Element moves, resizes or recolours because layout says so | `Transition(ui.ElementTransition{…})` on each element the change moves |
 | Text, icon or image content swaps | `ContentTransition` — fade, icon grow, `Numeric` rolling digits, or `Morph` turning one text into another character by character |
-| Rows enter or leave a list | `Enter`/`Exit` `ui.Motion` on the rows |
+| Rows enter or leave a list | `Enter`/`Exit` `ui.Motion` on the rows; neighbours glide when `ListState.MoveAnimation` is set |
 | Spinner, progress, pressed and hover states | the widget's own — check before adding any |
 
 Done when: every motion in the change names its mechanism — transition,
@@ -92,7 +92,7 @@ dismiss from there, never on a timer.
 | Brings itself in as it scrolls | `InView()` → `AnimateTo`; `ScrollState` for scroll-linked | — |
 | Timed sequence on one value | `Keyframes(name, kfs, ui.KeyframeOptions{Run: …})` | A `Run` change replays; first time must be zero, times increasing; `Delay`/`Repeat`/`Alternate` |
 | Many values, one playhead | `card.Timeline(key, ui.TimelineOptions{Run: …})` + `tl.Tween` | Placements `AfterPrevious`/`WithPrevious`/`AtLabel`/`AtTime`; `Paused`/`Reverse`/`Seek`/`Progress` take effect the frame they are said; `Settled`/`Arrived` chain state |
-| Drag, throw, swipe away | `el.Draggable(&offset, ui.DraggableOptions{Axis, Bounds, Snap})` | Remove for real only when `!Transitioning()`; `DragOffset()` follows for backdrops; by hand: `Jump`, `DragEnded`, `Project`, `Rubberband` |
+| Drag, throw, swipe away | `el.Draggable(&offset, ui.DraggableOptions{Axis, Bounds, Snap})`; a swipe-reveal row on phones `mobile.SwipeRow` | Remove for real only when `!Transitioning()`; `DragOffset()` follows for backdrops; the drag survives its source element leaving the view; by hand: `Jump`, `DragEnded`, `Project`, `Rubberband` |
 | Brings itself in as it scrolls | `InView()` → `AnimateTo`; `ScrollState` for scroll-linked | — |
 | A change must not show as motion | `c.DisableAnimations()` before building it | Restoring state, jumping to a search result |
 
@@ -123,6 +123,9 @@ Protocol and `ui.NewTester` at `../mygo-usage`; the two clocks apply in
 full. `tt.Advance(d)` drives animation, keyframe and timeline time; call
 `tt.Frame()` after changing state from outside the view;
 `tt.FramePending()` is false wherever the view should settle.
+`ui.Recorder` builds the view's frames at the times you name, each
+anew at its own time — the same frames every run — so a video of an
+animation is deterministic; `plugins/render` encodes them.
 
 Done when: the test advances the clock rather than sleeping, drives the
 real gesture (`tt.ClickAt`, `tt.Scroll`) rather than a helper, and settles

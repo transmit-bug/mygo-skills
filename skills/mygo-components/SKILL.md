@@ -1,6 +1,6 @@
 ---
 name: mygo-components
-description: Pick MyGo's own widget before composing layout by hand. Use when writing or changing native UI that imports github.com/egoist/mygo/ui — a new screen, table, form, navigation, feedback, status, empty state or split pane, a styling/theme pass, or any moment a screen "seems to need a widget MyGo lacks". Reconciles each UI need against the official MyGo inventory at the version go.mod compiles against, and records the verdict.
+description: Pick MyGo's own widget before composing layout by hand. Use when writing or changing native UI that imports github.com/egoist/mygo/ui — a new screen, table, form, navigation, feedback, status, empty state or split pane, a screen for phones or tablets, a styling/theme pass, or any moment a screen "seems to need a widget MyGo lacks". Reconciles each UI need against the official MyGo inventory at the version go.mod compiles against, and records the verdict.
 ---
 
 # Reconcile against MyGo's inventory
@@ -86,9 +86,9 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | Need | Use | The tell it retires |
 |---|---|---|
 | A row of controls along a window | `ui.Toolbar` | `Row` of `Button`s: loses one tab stop, arrow keys, overflow menu |
-| A command with options | `ui.MenuButton`; a menu of choices with their current one ticked `ui.PopoverMenuButton` — `PopoverMenuButtonOptions` places the menu (`At`/`Self`) and `Open` opens it from code | `Button` + `Popover` wired by hand |
+| A command with options | `ui.MenuButton`; a menu of choices with their current one ticked `ui.PopoverMenuButton` — `PopoverMenuButtonOptions` places the menu (`At`/`Self`), styles its rows (`Item`), and `Open` opens it from code; plain `ui.PopoverMenu` takes the same `Panel`/`Item` options | `Button` + `Popover` wired by hand |
 | A main action joined to related ones | `ui.SplitButton` — one control, `.Button` acts and `.Arrow.Menu` opens the related actions; in accent: `ui.PrimarySplitButton` | a `Button` beside a `MenuButton` as two controls |
-| A menu item that deletes, explains or carries a value | `MenuItem.Danger`, `.Subtitle`, `.Trailing`, `.Content` (anything at all, a download row with a progress bar); `Menu.MaxWidth` caps width; `Icon`/`IconColor` in drawn menus | a hand-drawn menu row; a destructive item the theme reads as safe |
+| A menu item that deletes, explains or carries a value | `MenuItem.Danger`, `.Subtitle`, `.Trailing`, `.Content` (anything at all, a download row with a progress bar); a count at the trailing edge `Badge`, in the column the menu's badges share (`BadgeAlign`); `Menu.MaxWidth` caps width; `Icon`/`IconColor` in drawn menus | a hand-drawn menu row; a destructive item the theme reads as safe |
 | Every menu of a window drawn in the window — the table's, the editor's, text inputs' too | `c.SetMenuPresentation(ui.PopoverMenus)` | per-widget menu styling |
 | Right-click on an element, row, cell or header | `Element.ContextMenu`, `ListState.CellMenu`, `ListState.HeaderMenu` | `Popover` placed at the pointer |
 | A button that stays pressed | `ui.Toggle`, `ui.ToggleGroup` | `int` field plus accent tint |
@@ -118,7 +118,8 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | One text whose spans differ in style | `ui.RichText(c, spans…)` | a `Row` of styled `Text` fragments |
 | Search with Escape to clear | `ui.SearchField` | `TextInput` + a clear button |
 | Rename in place | `ui.EditableText` | a dialog to change a name |
-| Tags, recipients | `ui.TokenField` | comma-split string |
+| Tags, recipients | `ui.TokenField` (`Query` reads the text being typed) | comma-split string |
+| One line too long, keeping its end | `Element.TruncateStart()` beside `SingleLine`/`MaxLines` (the ellipsis moves to the start) | a measured substring by hand |
 | Find inside a document | `ui.FindBar` | ad-hoc search field plus counts |
 | Code or JSON, read-only | `github.com/egoist/mygo/ui/editor` | `TextArea` with monospace |
 | Code with carets, folding, completions, diagnostics, snippets | `editor.View` + `editor.Buffer`; templates with fields and Tab stops: `editor.ParseSnippet`, `State.InsertSnippet` | `TextArea` plus a gutter built by hand |
@@ -139,8 +140,8 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 
 | Need | Use | The tell it retires |
 |---|---|---|
-| A data table, a spreadsheet | `ui.Table` + `Sortable`, `Fixed`, `RowHeader`, `CellSelect`, `Columns`, `CellMenu`, `Reorder`, `EditableText`, `Key`; a spreadsheet's chosen cell and stripes: `ListState.HeaderCell`, `CellsStyle` | header `Row` with literal widths, rows built in a loop |
-| Rows of any height, appending; a chat or log | `ui.List` + `Key`, `FollowEnd`, `Header`, `Reorder`, `DragSelect`; a fold opening in the last row: `HoldPlace` keeps the clicked line put; `DragRows` drags rows to targets elsewhere; the app picks the row: `Choose(row)`, a `Key` keeping the choice with its item as rows shift | `Scroll` + `Column` + index loops; scroll anchoring by hand |
+| A data table, a spreadsheet | `ui.Table` + `Sortable`, `Fixed`, `RowHeader`, `CellSelect`, `Columns`, `CellMenu`, `Reorder`, `EditableText`, `Key`, uniform `RowHeight`; a spreadsheet's chosen cell and stripes: `ListState.HeaderCell`, `CellsStyle` | header `Row` with literal widths, rows built in a loop |
+| Rows of any height, appending; a chat or log | `ui.List` + `Key`, `FollowEnd`, `Header`, `Reorder`, `DragSelect`; rows gliding as neighbours come, go or move: `MoveAnimation` (with a `Key`); a fold opening in the last row: `HoldPlace` keeps the clicked line put; `DragRows` drags rows to targets elsewhere; the app picks the row: `Choose(row)`, a `Key` keeping the choice with its item as rows shift; `EndReached` fires after layout as the user scrolls near the end, once per approach | `Scroll` + `Column` + index loops; scroll anchoring by hand |
 | A tree | `ui.Tree`/`TreeItem`; large or columned `ui.Outline`, `ui.OutlineTable` | indented rows with a bool map |
 | A grid of items | `ui.GridView` (builds what shows); layout grid `ui.Grid` | `Column` of `Row`s |
 | A value dragged within the window, or files dropped on a target | `Element.Draggable`, `ui.DragOver[T]`/`ui.Drop[T]`, `ui.DataDragOver`/`ui.DropData`, `Element.DroppedFiles` | pointer tracking on `InputEvent` plus a bool |
@@ -185,7 +186,8 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | A short count or label | `ui.Badge` | `Box` + `Text` + radius |
 | Several stages on one playhead | `Element.Timeline(key, ui.TimelineOptions)`; a single value `Element.AnimateTo`/`AnimateWith` | percentages recomputed each frame |
 | A trend, bars, an area | `ui/chart`: `Plot`, `Axes`, `NewLinear`/`NewBand`/`NewTime`, log `NewLog`/`NewSymLog` (a domain crossing zero needs `SymLog`), `Rect`/`Line`/`Area` marks | showing only the current sample |
-| An icon | `ui.Icon` over `ui.MustParseSVG`/`ui.ParseSVG` (MyGo draws icons, supplies none); Apple's symbols on macOS: `sfsymbols.Symbol(c, name)`, which reports none elsewhere — keep an SVG fallback | text glyphs as icons |
+| An icon | `ui.Icon` over `ui.MustParseSVG`/`ui.ParseSVG` (MyGo draws icons, supplies none; the SVG may use `var()`, dark-mode media queries, text and markers); Apple's symbols on macOS: `sfsymbols.Symbol(c, name)`, which reports none elsewhere — keep an SVG fallback | text glyphs as icons |
+| A picture on the network | `netimage.Image(c, url)` — its own cache and decode off the main thread; warm it `netimage.Preload`, evict `Forget`/`Clear`, carry auth or a proxy `SetClient`; downsize at decode `netimage.DecodeBitmapScaled` | `ui.Image` + a goroutine fetching and decoding by hand |
 | A picture, a person | `ui.Image`, `ui.Avatar` | — |
 | A clip that plays, or loops behind content | `ui.Video` over a `ui.VideoPlayer`: `ui/video.Open/OpenURL/OpenData` (the system's engines — sound, seek, rate) or a Go decoder, `ui.NewGIFDecoder`/`ui.NewAPNGDecoder` (silent, everywhere) | a timer replacing an `Image` each frame |
 
@@ -200,11 +202,23 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | Text over art, a heading wrapped evenly | `Element.TextShadow(…)`/`TextStroke`; `Balance`, `Pretty` | a blurred copy of the text behind it, line breaks by hand |
 | Clip or mask an element | `ClipInset`, `Painter.ClipPath`, `MaskLinearGradient` and the radial and conic kin, `Masks` to layer them | stacked faded copies |
 | Pixels painted of your own | `ui.NewCanvas`; painters and shaped text in `docs/ui/drawing.md` |
-| The window's options, or a title bar the view draws | `mygo.WindowOptions` (`StateKey`, min size, `TitleBarStyle`), `c.TitleBar()` | fixed window chrome drawn inside the page |
+| The window's options, or a title bar the view draws | `mygo.WindowOptions` (`StateKey`, min size, `TitleBarStyle`, `IgnoreMouseEvents` for click-through from creation), `c.TitleBar()`; a card inset from the window's edges sizes its radius concentric with them: `win.CornerRadius() - inset` | fixed window chrome drawn inside the page |
 | A layout from the right | `Element.Direction`, `MarginStart`/`MarginEnd`, `PaddingStart`/`PaddingEnd` and the other logical edges | mirrored `Left`/`Right` arithmetic |
 | The window's language and regional formats | `c.Locale`, `c.Region`, `Element.Lang`; the widgets' own strings follow them; compact numbers, currency, "3 minutes ago": `i18n.NumberOptions`, `FormatRelativeTime` | hardcoded labels and `1/2/2006` |
 | Names and roles | `.Label()`, `.Role()`, `.Description()`; announce async results with `c.Announce` |
-| See why a box is off by 4px, or tune it live | the window's developer tools (`F12`): styles edit live, **Copy as Go** writes the calls; `docs/ui/inspector.md` |
+| See why a box is off by 4px, or tune it live | the window's developer tools (`F12`): styles edit live, **Copy** hands over the element, its styles and its values, **Copy as Go** writes the calls; `docs/ui/inspector.md` |
+
+On phones (iOS and Android, `docs/mobile/interface.md`) the same inventory
+runs, and the idioms the desktop lacks live in `ui/mobile`: the system's
+bars `TopBar`/`BottomBar`, paging `PageView` + `PageDots`, the bottom
+`Sheet` and `ActionSheet`, `Drawer`, `FloatingButton`, `SwipeRow`, the
+press ripple `Ink`, grouped rows `Section`/`ListRow`, the wheels
+`Wheel`/`DatePicker`/`TimePicker`, pinch `Zoomable` — their look follows
+the platform through `mobile.SetLook`. The window itself becomes the
+system's navigation: `mygo.NewTabs`, `Window.Push`/`Pop`, and
+`Router.SystemStack` makes the router's history the stack (on desktops
+and in browsers, nothing changes). Input is fingers: `Element.Touches`
+names every finger by ID, `Touch.Width`/`Height` is its contact.
 
 The guides behind these rows: `docs/ui/accessibility.md`,
 `docs/ui/right-to-left.md`, `docs/ui/styling.md`.
