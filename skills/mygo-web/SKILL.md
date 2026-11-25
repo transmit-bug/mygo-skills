@@ -1,6 +1,6 @@
 ---
 name: mygo-web
-description: Web frontends of a MyGo app — how pages load (dev server, embedded dist, custom protocols), the trust model for who may call Go, bound services with channels and typed events, the generated TypeScript client and mygo-runtime, and plugins, the official ones and writing one. Use when a window shows a web page, the frontend must call Go or receive events from it, a page needs CORS-free HTTP, a WebSocket with headers or a local database, or a Go feature should reach pages as a plugin. Native UI windows are mygo-components and mygo-usage; desktop services are mygo-desktop.
+description: Web frontends of a MyGo app — how pages load (dev server, embedded dist, custom protocols), the trust model for who may call Go, bound services with channels and typed events, the generated TypeScript client and mygo-runtime, and the plugin calls pages make (the plugins themselves are mygo-plugins). Use when a window shows a web page, the frontend must call Go or receive events from it, or a page's calls, events, channels or generated client need work. Native UI windows are mygo-components and mygo-usage; desktop services are mygo-desktop.
 ---
 
 # Web frontends
@@ -19,7 +19,7 @@ Scope: pages and what serves them.
 |---|---|
 | `$MYGO/docs/bindings.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | bound services, the types table, errors, events, channels, the generated client, who may call, `Page.Eval` |
 | `$MYGO/docs/frontend.md` | how pages load, custom protocols, trust and untrusted pages, `mygo-runtime` exports, custom title bars, links, downloads |
-| `$MYGO/docs/plugins.md` and `$MYGO/docs/plugins/` | the official plugins; writing one |
+| `../mygo-plugins/SKILL.md` | the official plugins — the four web ones and the all-Go packages — and writing one |
 | `$MYGO/docs/i18n.md` | ICU catalogs in Go and in pages |
 
 ## Resolve the version, then read the section
@@ -57,22 +57,13 @@ hand.
 
 ## Plugins
 
-`mygo.Use(fetch.Plugin, …)` before `App.Run`, and the frontend imports the
-matching `@mygo-plugins/*` package. Each plugin's `New` takes options — the
-fetch and WebSocket plugins take an `http.Client` and an `Allow` function.
-
-| Need | Plugin |
-|---|---|
-| HTTP from Go, any header, no CORS | `fetch` — a URL carrying credentials (`https://user:pass@host`) is rejected in the page, before Go sees it |
-| WebSocket with handshake headers | `websocket` |
-| A local database, without cgo | `sqlite` — since v0.9.0 a native module: `MYGO_NATIVE_SQLITECORE` names a different library, `sqlite.LibraryPath` and `MYGO_SQLITE_LIBRARY` are gone |
-| Page-side file watches | `watch` |
-| A Sparkle-style update window | `updater` |
-| A terminal view for native UI | `terminal` |
-| Liquid Glass surfaces | `glass` |
-| Game loop, camera, gamepads | `game` |
-| Loading indicators | `loading` |
-| Another process drives the app — end-to-end tests, agents | `automation` (opt-in, left out of release builds); its `mygo-automation` CLI snapshots windows and acts by short ref — `go install github.com/egoist/mygo/plugins/automation/cmd/mygo-automation`, and `mygo-automation skills` prints the version-matched guide |
+The official plugins — four web ones (`fetch`, `websocket`, `sqlite`,
+`watch`, each a Go half plus an `@mygo-plugins/*` package) and nine
+all-Go packages (`updater`, `terminal`, `glass`, `game`, `loading`,
+`sfsymbols`, `permissionflow`, `render`, `automation`) — and writing a
+plugin of your own are `../mygo-plugins`. A plugin's calls ride on
+everything this skill covers: trust decides who may call, `Allow` gates
+what leaves, and the npm half typechecks against the generated client.
 
 Writing one: a `mygo.Plugin{Name, Service, Setup}`, its service bound under
 `plugin:<name>` outside the generated client, its JavaScript package calling

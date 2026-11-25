@@ -208,17 +208,10 @@ app: upgrade there (step 1), rather than wrapping what MyGo is about to ship.
 | Names and roles | `.Label()`, `.Role()`, `.Description()`; announce async results with `c.Announce` |
 | See why a box is off by 4px, or tune it live | the window's developer tools (`F12`): styles edit live, **Copy** hands over the element, its styles and its values, **Copy as Go** writes the calls; `docs/ui/inspector.md` |
 
-On phones (iOS and Android, `docs/mobile/interface.md`) the same inventory
-runs, and the idioms the desktop lacks live in `ui/mobile`: the system's
-bars `TopBar`/`BottomBar`, paging `PageView` + `PageDots`, the bottom
-`Sheet` and `ActionSheet`, `Drawer`, `FloatingButton`, `SwipeRow`, the
-press ripple `Ink`, grouped rows `Section`/`ListRow`, the wheels
-`Wheel`/`DatePicker`/`TimePicker`, pinch `Zoomable` — their look follows
-the platform through `mobile.SetLook`. The window itself becomes the
-system's navigation: `mygo.NewTabs`, `Window.Push`/`Pop`, and
-`Router.SystemStack` makes the router's history the stack (on desktops
-and in browsers, nothing changes). Input is fingers: `Element.Touches`
-names every finger by ID, `Touch.Width`/`Height` is its contact.
+On phones (iOS and Android) the same inventory runs; the idioms the
+desktop lacks — the `ui/mobile` kit, the system's tabs and pushed stacks,
+fingers and the wheels — are catalogued by `../mygo-mobile`. Reconcile a
+phone screen here first: the kit's widgets retire the same tells.
 
 The guides behind these rows: `docs/ui/accessibility.md`,
 `docs/ui/right-to-left.md`, `docs/ui/styling.md`.

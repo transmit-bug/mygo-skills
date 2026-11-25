@@ -22,10 +22,12 @@ npx skills add transmit-bug/mygo-skills --skill mygo-components
 |---|---|
 | [`mygo-usage`](skills/mygo-usage/SKILL.md) | How a MyGo app fits together — windows, view functions, state, threads — and how to build and verify a change, including headless `ui.NewTester` tests |
 | [`mygo-components`](skills/mygo-components/SKILL.md) | Widget selection: reconciling every UI need against the official MyGo inventory before hand-rolling layout, plus layout, feedback and theming conventions |
-| [`mygo-desktop`](skills/mygo-desktop/SKILL.md) | Services outside the window: dialogs, notifications, clipboard, shell, displays, theme, power, network, secrets, file watching, global shortcuts, menus, tray, lifecycle beyond `Run` |
-| [`mygo-web`](skills/mygo-web/SKILL.md) | Web frontends: page loading and trust model, bound services, channels and typed events, the generated TypeScript client, and plugins |
+| [`mygo-desktop`](skills/mygo-desktop/SKILL.md) | Services outside the window: dialogs, notifications, clipboard, shell, displays, theme, power, network, secrets, file watching, global shortcuts, menus, tray, document-based apps, launcher apps, lifecycle beyond `Run` |
+| [`mygo-web`](skills/mygo-web/SKILL.md) | Web frontends: page loading and trust model, bound services, channels and typed events, and the generated TypeScript client |
+| [`mygo-plugins`](skills/mygo-plugins/SKILL.md) | The official plugins: `fetch`, `websocket`, `sqlite` and `watch` for pages, the all-Go packages for native UI — updater, terminal, glass, game, loading, SF Symbols, permissionflow, render, automation — each with the rule that bites, and writing a plugin |
 | [`mygo-motion`](skills/mygo-motion/SKILL.md) | Motion: reconcile against built-in transitions, the timing table, values/poses/keyframes/timelines/gestures, less-motion and clock-driven animation testing |
 | [`mygo-drawing`](skills/mygo-drawing/SKILL.md) | Custom painting: the draw-only rule and Painter, the four tiers, canvases, pan/zoom, shaders, shaped text, frame cost |
+| [`mygo-mobile`](skills/mygo-mobile/SKILL.md) | Phones and tablets: the dev loop, store builds and publishing, how apps behave on phones, the system's tabs and stacks, fingers and the phone widget kit, device APIs and plugins, native code in Swift and Kotlin |
 
 The skills reference each other by relative path (`../mygo-components/SKILL.md`); install them as a set — the sibling layout under `skills/` keeps those links working wherever the CLI copies them.
 
@@ -37,15 +39,17 @@ skills/
 ├── mygo-components/
 ├── mygo-desktop/
 ├── mygo-web/
+├── mygo-plugins/
 ├── mygo-motion/
-└── mygo-drawing/
+├── mygo-drawing/
+└── mygo-mobile/
 ```
 
 Each skill is a directory with a `SKILL.md` (frontmatter `name` + `description`) — the standard [agent skills](https://agentskills.io) format. The `skills/` layout is auto-discovered by the CLI; no configuration needed.
 
 ## As a pack
 
-On [skills.sh](https://www.skills.sh), add this repository (or the individual skills) to a [pack](https://www.skills.sh/docs/packs) to share all six with one install command:
+On [skills.sh](https://www.skills.sh), add this repository (or the individual skills) to a [pack](https://www.skills.sh/docs/packs) to share all eight with one install command:
 
 ```bash
 npx skills add https://skills.sh/p/<pack-id>

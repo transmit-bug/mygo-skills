@@ -18,15 +18,17 @@ touches.
 | Material | Reached for |
 |---|---|
 | `../mygo-components/SKILL.md` | which widget carries the meaning, layout, feedback, the official inventory |
-| `../mygo-desktop/SKILL.md` | dialogs, notifications, menus, tray, global shortcuts, secrets, watching files, dark mode, power, network, lifecycle beyond `Run` |
-| `../mygo-web/SKILL.md` | web pages: bindings, the generated client, plugins, trust, custom protocols |
+| `../mygo-desktop/SKILL.md` | dialogs, notifications, menus, tray, global shortcuts, secrets, watching files, dark mode, power, network, documents, launchers, lifecycle beyond `Run` |
+| `../mygo-web/SKILL.md` | web pages: bindings, the generated client, trust, custom protocols |
+| `../mygo-plugins/SKILL.md` | the official plugins — fetch, websocket, sqlite, watch, and the all-Go packages — and writing one |
 | `../mygo-motion/SKILL.md` | making a change move: transitions, springs, keyframes, timelines, gestures, animation testing |
 | `../mygo-drawing/SKILL.md` | custom painting: `Draw`/`Painter`, canvases, shaders, shaped text, paint cost |
+| `../mygo-mobile/SKILL.md` | phones and tablets: the dev loop, store builds, the system's tabs and stacks, the phone kit, device APIs and plugins |
 | the app's `AGENTS.md`, and the docs it names | its package layout, its environment/harness types, its sizes, its commands |
 | `$MYGO/docs/windows.md` and `$MYGO/docs/ui/windows.md`, where `MYGO=$(go list -m -f '{{.Dir}}' github.com/egoist/mygo)` | windows beyond the first: `NewWindow`, `WindowOptions` (`StateKey`, `Parent`, `Modal`, `Hidden`), remembered bounds (`App.ClearWindowStates` resets), `SetInputRegion` (clicks only on parts of the window), flyouts, panels |
 | `$MYGO/docs/ui/` (same `MYGO`) | the UI prose: `views.md`, `layout.md`, `testing.md`, `windows.md`, `browsers.md` (the same native UI as a web page), `accessibility.md`, `performance.md`, catalogue `README.md` |
-| `$MYGO/docs/mobile/` (same `MYGO`) | building for iOS or Android — the CLI targets, tabs and pushed windows, fingers and touch, device APIs, native code of your own |
-| `$MYGO/docs/` (same `MYGO`) | the non-UI prose: `native.md`, `native-modules.md` (Go interfaces in Swift, Rust or Zig; experimental), `menus.md`, `app.md`, `updates.md` (auto-update via `mygo.Updater`), `configuration.md`, `cli.md`, `distribution.md` |
+| `$MYGO/docs/mobile/` (same `MYGO`) | building for iOS or Android — the CLI targets, signing and store publishing, tabs and pushed windows, fingers and touch, device APIs (haptics, share, battery), the device plugins (maps, location, camera, biometrics, push, purchases), native code of your own |
+| `$MYGO/docs/` (same `MYGO`) | the non-UI prose: `getting-started.md`, `windows.md`, `app.md`, `menus.md`, `documents.md` (document-based apps), `i18n.md` (ICU catalogs, typed strings), `native.md`, `native-modules.md` (Go interfaces in Swift, Rust or Zig; experimental), `data-transfer.md` (clipboard and drag payloads), `audio.md`, `launchers.md` (Spotlight-style apps), `frontend.md`, `bindings.md`, `plugins.md` and `plugins/` (the official plugins), `updates.md` (auto-update via `mygo.Updater`), `distribution.md` (packaging, signing, installers), `github-actions.md` (release CI), `configuration.md`, `cli.md`, `architecture.md` (how MyGo works inside) |
 
 ## How a MyGo app is put together
 
